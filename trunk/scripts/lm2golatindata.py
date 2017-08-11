@@ -106,11 +106,11 @@ class GOLatin:
             # word=de,f=239
             notAWord = False
             shortcutinfo = self.shortcuts.get(word)
-            shortcuts = set()
+            shortcutsandF = dict()
             if shortcutinfo is not None:
                 shortcutinfoInUnigramList[word] = 0;
                 notAWord = shortcutinfo[0]
-                shortcuts = shortcutinfo[1]
+                shortcutsandF = shortcutinfo[1]
 
             isOffensive = self.offensive.has_key(word)
 
@@ -120,10 +120,10 @@ class GOLatin:
                                                            ',possibly_offensive=true' if isOffensive else '',
                                                            )
                               )
-            shortcutF = 15 if notAWord else 14
-            for shortcut in shortcuts:
+            # shortcutF = 15 if notAWord else 14
+            for shortcut, shortcutF in shortcutsandF.iteritems():
                 #  shortcut=don't,f=15
-                self.stdout.write('  shortcut=%s,f=%d\n'%(shortcut, shortcutF)) 
+                self.stdout.write('  shortcut=%s,f=%d\n'%(shortcut, shortcutF))
                 
                 
             bigram = sorted(freq_bigram[1].iteritems(), key=lambda k:k[1], reverse=True)
@@ -146,8 +146,8 @@ class GOLatin:
                 continue
             notAWord = shortcutinfo[0]
             self.stdout.write(' word={0},f={1}{2}\n'.format(word, 0, ',not_a_word=true' if notAWord else '', ))
-            shortcutF = 15 if notAWord else 14
-            for shortcut in shortcutinfo[1]:
+            # shortcutF = 15 if notAWord else 14
+            for shortcut, shortcutF in shortcutinfo[1].iteritems():
                 #  shortcut=don't,f=15
                 self.stdout.write('  shortcut=%s,f=%d\n'%(shortcut, shortcutF))
 
@@ -155,8 +155,9 @@ class GOLatin:
         if shortcutPath is not None:
             for line in getFileLine(shortcutPath):
                 # shortcut文件中第三列0为not_a_word=true,1则表示词语为正常词语
-                # self.shortcuts = {word: [notAword, set(shortcut)]}
-                word, shortcut, notAWord = map(unicode.strip, line.split('\t'))
+                # shortcut文件中第四列0为f=15,1为f=14
+                # self.shortcuts = {word: [notAword, dict(shortcut=shortcutF)]}
+                word, shortcut, notAWord, shortcutF = map(unicode.strip, line.split('\t'))
                 # 单词两边出现-和'删掉
                 if (word[0] in "-'" or word[-1] in "-'"
                     or shortcut[0] in "-'" or shortcut[-1] in "-'"
@@ -164,12 +165,15 @@ class GOLatin:
                     continue
 
                 notAWord = True if notAWord == '0' else False
+                shortcutF = 15 if shortcutF == '0' else 14
                 info = self.shortcuts.get(word, None)
                 if info is None:
-                    self.shortcuts[word] = [notAWord, set([shortcut])]
+                    self.shortcuts[word] = [notAWord, {shortcut: shortcutF}]
+                    # self.shortcuts[word] = [notAWord, set([shortcut])]
                 else:
                     if notAWord: info[0] = True
-                    info[1].add(shortcut)
+                    info[1][shortcut] = shortcutF
+                    # info[1].add(shortcut)
                 
         if offensivePath is not None:
             self.keepOffensiveFreq = keepOffensiveFreq
@@ -281,7 +285,7 @@ def analyzeParams(args):
                       help=u"二维词的最大个数,可选,默认设置为100,", default=BIGRAM_MAX_COUNT)
 
     parser.add_option("-s", "--shortcut", dest="shortcutPath", metavar="FILE", action="store"
-                      , help=u'shortcut文件路径。文件三列，分别为word\\tshortcut\\tnot a word')
+                      , help=u'shortcut文件路径。文件四列，分别为word\\tshortcut\\tnot a word\\tshort cut F')
     parser.add_option("-f", "--offensive", dest="offensivePath", metavar="FILE", action="store"
                       , help=u'offensive文件路径。文件一列词')
     parser.add_option("", "--keepOffensiveFreq", dest="keepOffensiveFreq", action="store_true"
