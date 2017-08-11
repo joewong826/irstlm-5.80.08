@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+
+import sys
+import os
+import codecs
+from optparse import OptionParser
+
+
+def getfileencode(path, defaultencoding='utf-8'):
+    encoding = defaultencoding
+    with open(path, 'r') as fp:
+        header = fp.read(3)
+        if header == codecs.BOM_UTF8:
+            encoding = 'utf_8_sig'
+        elif header[:2] == codecs.BOM_LE:
+            encoding = 'utf_16_le'
+        elif header[:2] == codecs.BOM_BE:
+            encoding = 'utf_16_be'
+        return encoding
+
+
+def getfiles(path):
+    path = os.path.abspath(path)
+    for root, dirs, files in os.walk(path):
+        if os.path.basename(root).startswith('.'):
+            continue
+        for filename in files:
+            if filename.startswith('.') or filename.endswith('~'):
+                continue
+            inputpath = os.path.join(root, filename)
+            yield inputpath
+
+def getStdio(inputPath, outputPath, inputCoding):
+    if inputPath is None:
+        stdin = sys.stdin
+        stdout = sys.stdout if outputPath is None else codecs.open(outputPath, 'w', inputCoding)
+        yield (stdin, stdout)
+        return
+
+    if os.path.isdir(inputPath):
+        # 输入是目录
+        stdout = sys.stdout
+        path_str_len = len(inputPath.rstrip(os.path.sep))
+        filecount = 0
+        for ip in getfiles(inputPath):
+            filecount += 1
+            print filecount, '\r',
+            # print ip
+            fileencoding = getfileencode(ip)
+            stdin = codecs.open(ip, 'r', fileencoding)
+
+            if outputPath is not None:
+                if os.path.exists(outputPath) and os.path.isdir(outputPath):
+                    op = os.path.join(outputPath, ip[path_str_len + 1:])
+                    stdout = codecs.open(op, 'w', inputCoding)
+                else:
+                    stdout = codecs.open(outputPath, 'w', inputCoding)
+
+            yield (stdin, stdout)
+    else:
+        # 输入是文件
+        fileencoding = getfileencode(inputPath)
+        stdin = codecs.open(inputPath, 'r', fileencoding)
+        stdout = sys.stdout if outputPath is None else codecs.open(outputPath, 'w', inputCoding)
+        yield (stdin, stdout)
+
+
+class CharacterStatistic:
+    def __init__(self):
+        self.codes = {}
+        self.totalfreq = 0
+        self.lines = 0
+
+    def load(self, stdio):
+        for line in stdio:
+            for c in line:
+                freq = self.codes.get(c, 0)
+                self.codes[c] = freq + 1
+                self.totalfreq += 1.0
+            self.lines += 1
+
+    def save(self, stdout):
+        #字符个数，带空格
+        stdout.write("字符个数，带空格、\\t、\\r、\\n：%d\n" % self.totalfreq)
+        #字符个数，不带空格
+        freq = self.totalfreq
+        for c in ' \t\r\n':
+            freq -= self.codes.get(c, 0)
+        stdout.write("字符个数，不在带空格、\\t、\\r、\\n：%d\n" % freq)
+
+        stdout.write("文件行数： %d\n" % self.lines)
+
+        #详细信息
+        for c, f in sorted(self.codes.iteritems(), key=lambda line: line[1], reverse=True):
+            prop = f / self.totalfreq
+            if c == '\t': code = '\\t'
+            elif c == '\r': code = '\\r'
+            elif c == '\n': code = '\\n'
+            else: code = c
+            stdout.write(u"%s(%5s)\t%8d\t%s\t%f\n" % (hex(ord(c)), code, f, '#' * int(100 * prop + 1), 100.0 * prop))
+
+
+    def clear(self):
+        self.codes.clear()
+        self.totalfreq = 0
+        self.lines = 0
+
+def analyzeParams(args):
+    parser = OptionParser(usage="%prog [-c str] [-u] [-l] [-v] -i FILE or [< FILE] -o FILE or [> FILE]"
+                                ""
+                          , version="%prog 2.0")
+
+    # add_option用来加入选项，action是有store，store_true，store_false等，dest是存储的变量，default是缺省值，help是帮助提示
+    parser.set_description(u'统计文件字符');
+
+    parser.add_option("-c", "--coding", dest="inputCoding", metavar="string"
+                      , help=u'指定输入文件编码， 默认utf-8，使用-i时该参数无效，对使用<传入文件时有效', default="utf-8")
+
+    parser.add_option("-i", "--input", dest="inputPath", metavar="FILE", action="store"
+                      , help=u'输入文件路径, 可以是目录， 也可使用< FILE')
+    parser.add_option("-o", "--output", dest="outputPath", metavar="FILE", action="store"
+                      , help=u'输出文件路径，可以是目录， 也可使用> FILE')
+
+    (opt, args) = parser.parse_args(args)
+
+
+    characterStatistic = CharacterStatistic()
+
+    for stdio, stdout in getStdio(opt.inputPath, opt.outputPath, opt.inputCoding):
+        characterStatistic.clear()
+        characterStatistic.load(stdio)
+        characterStatistic.save(stdout)
+
+
+if __name__ == "__main__":
+    sys.argv = ['/home/zhaokun/IME/StatisticalLanguageModel/irstlm-5.80.08/trunk/scripts/character-statistics',
+                # '-i', '/home/zhaokun/IME/DicTools/gram_statistics_latin/output/output_webContent/sitroom.html',
+                # '-o', '/home/zhaokun/IME/DicTools/gram_statistics_latin/output/output_webContent/sitroom_new.html',
+                '-i', '/home/zhaokun/文档/add-start-end/news.txt',
+                ]
+    analyzeParams(sys.argv)

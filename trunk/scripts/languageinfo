@@ -1,0 +1,587 @@
+#注释
+{
+  u"language_list": [
+    # [语言， 语言描述， 语言locale， 语言中文描述]
+    # 语言locale小写大写均可
+    [u"Arabic",  u"العربية",  u"ar",  u"阿拉伯语"],
+    [u"Bengali",  u"বাংলা",  u"bn",  u"孟加拉语"],
+    [u"Bulgarian",  u"Български",  u"bg",  u"保加利亚语"],
+    [u"Catalan",  u"Català",  u"ca",  u"加泰罗尼亚语"],
+    [u"Chinese",  u"中文",  u"zh",  u"中文"],
+    [u"Croatian",  u"Hrvatski",  u"hr",  u"克罗地亚语"],
+    [u"Czech",  u"Čeština",  u"cs",  u"捷克语"],
+    [u"Danish",  u"Dansk",  u"da",  u"丹麦语"],
+    [u"Dutch",  u"Nederlands",  u"nl",  u"荷兰语"],
+    [u"English",  u"English",  u"en",  u"英语"],
+    [u"English(US)",  u"English(US)",  u"en_us",  u"英语（美国）"],
+    [u"Finnish",  u"Suomi",  u"fi",  u"芬兰语"],
+    [u"French",  u"Français",  u"fr",  u"法语"],
+    [u"Georgian",  u"ქართული",  u"ka",  u"格鲁吉亚语"],
+    [u"German",  u"Deutsch",  u"de",  u"德语"],
+    [u"Greek",  u"Ελληνικά",  u"el",  u"希腊语"],
+    [u"Gujarati",  u"ગુજરાતી",  u"gu",  u"古吉拉特语"],
+    [u"Hebrew",  u"עברית",  u"heb",  u"希伯来语"],
+    [u"Hindi",  u"हिन्दी",  u"hi",  u"印地语"],
+    [u"Hungarian",  u"Magyar",  u"hu",  u"匈牙利语"],
+    [u"Indonesian",  u"Indonesian",  u"in",  u"印度尼西亚语"],
+    [u"Italian",  u"Italiano",  u"it",  u"意大利语"],
+    [u"Japanese",  u"日本語",  u"ja",  u"日语"],
+    [u"Kannada",  u"ಕನ್ನಡ",  u"kn",  u"坎那达语"],
+    [u"Khmer",  u"ភាសាខ្មែរ",  u"km",  u"高棉语"],
+    [u"Korean",  u"한국어",  u"ko",  u"韩语"],
+    [u"Latvian",  u"latviešu valoda",  u"lv",  u"拉脱维亚语"],
+    [u"Lithuanian",  u"Lietuvių",  u"lt",  u"立陶宛语"],
+    [u"Malay",  u"Malay",  u"ms",  u"马来语"],
+    [u"Malayalam",  u"മലയാളം",  u"ml",  u"马拉雅拉姆语"],
+    [u"Myanmar",  u"မြန်မာဘာသာ",  u"my",  u"缅甸语"],
+    [u"Norwegian",  u"Norsk",  u"no",  u"挪威语"],
+    [u"Oriya",  u"ଓଡ଼ିଆ",  u"or",  u"奥里亚语"],
+    [u"Persian",  u"فارسی",  u"fa",  u"波斯语"],
+    [u"Polish",  u"Polski",  u"pl",  u"波兰语"],
+    [u"Portuguese(Pt)",  u"Português",  u"pt",  u"葡萄牙语（pt）"],
+    [u"Portuguese(Br)",  u"Português(Br)",  u"pt_br",  u"葡萄牙语（br）"],
+    [u"Punjabi",  u"ਪੰਜਾਬੀ",  u"pa",  u"旁遮普语"],
+    [u"Romanian",  u"Română",  u"ro",  u"罗马尼亚语"],
+    [u"Russian",  u"Русский",  u"ru",  u"俄语"],
+    [u"Sanskrit",  u"संस्कृतम्",  u"sa",  u"梵文"],
+    [u"Serbian",  u"српски",  u"sr",  u"塞尔维亚语"],
+    [u"Slovak",  u"Slovenčina",  u"sk",  u"斯洛伐克语"],
+    [u"Slovenian",  u"Slovenščina",  u"sl",  u"斯洛文尼亚语"],
+    [u"Spanish",  u"Español",  u"es",  u"西班牙语"],
+    [u"Spanish(LA)",  u"Español(LA)",  u"es_la",  u"西班牙语(拉美)"],
+    [u"Spanish(US)",  u"Español(US)",  u"es_us",  u"西班牙语(美国)"],
+    [u"Swedish",  u"Svenska",  u"sv",  u"瑞典语"],
+    [u"Tagalog/Filipino",  u"Tagalog",  u"tl",  u"他加禄语/菲律宾语"],
+    [u"Tamil",  u"தமிழ்",  u"ta",  u"泰米尔语"],
+    [u"Telugu",  u"తెలుగు",  u"te",  u"泰卢固语"],
+    [u"Thai",  u"ไทย",  u"th",  u"泰语"],
+    [u"Turkish",  u"Türkçe",  u"tr",  u"土耳其语"],
+    [u"Ukrainian",  u"Українська",  u"uk",  u"乌克兰语"],
+    [u"Urdu",  u"اردو",  u"ur",  u"乌尔都语"],
+    [u"Vietnamese",  u"Việt",  u"vi",  u"越南语"],
+
+  ],
+  "language_charset": {
+  #  /**
+  #  "locale": {  // 语言的locale，大小写都可以，如en， pt_br， pt_BR
+  #    "base": "en" //默认base为default，可不添加，会继承default的所有内容
+  #    "validchars": [
+  #      // A-Z
+  #      "0x0041-0x005a",
+  #      // a-z
+  #      "0x0061-0x007a"]
+  #    "sentenceTerminators": ".?!"//整句结尾符号，遇到这些符号，下一个单词会首字母大写
+  #    "symbolsPrecededBySpace": ""//符号前有空格
+  #    "symbolsFollowedBySpace": ""//符号后有空格
+  #    "symbolsClusteringTogether" : ""聚合符号，该字符前不需要前面的空格，一般用来区别symbolsPrecededBySpace
+  #    "wordConnectors": ""//单词连接符一般为'-
+  #    "wordSeparators": ""//单词切分符，一般为标点符号
+  #    "contextSensitiveMultiWhitespace" : True  //单词间存在多个空白字符时，是否进行上下文关联（建立ngram关系）
+  #    "contextSensitiveWrap" : True  //单词间存在换行符时，是否进行上下文关联（建立ngram关系）
+  #    "caseSensitive" : True // 区分大小写，为True时，处理大小写，为False时，全部转成小写处理
+  #  }
+   # */
+
+    "default": {
+      "validchars": [
+        ##  number
+        #"0x0030-0x0039", #0-9
+        ##  symbol
+        # '
+        "0x0027",
+        # -
+        "0x002d",
+        ##  Latin
+        ##  Base Latin
+        # A-Z
+        "0x0041-0x005a",
+        # a-z
+        "0x0061-0x007a",
+        ##  Latin 1
+        # À-ÿ
+        "0x00c0-0x00ff",
+        ##  Ext-A
+        # Ā-ſ
+        "0x0100-0x017f",
+        ##  Ext-B
+        # ƀ-ɏ
+        "0x0180-0x024f",
+        ##  Ext-Additional
+        # Ḁ-ỹ
+        "0x1e00-0x1ef9"
+      ],
+      "wordReplace": [
+        #需要事先替换的字符，一般是wordConnectors字符的另一种形式，需要先替换成wordConnectors，如it’s和it's
+        # [old, new]，　把old（可以是多个字符）里的字符替换成new（只能是单个字符）
+        [u"\u2018\u2019\u02BC\uA78B\uA78C\uFF07", u"'"],
+        [u"\u2010\u2012\u00AD\u02D7\u2043\u207B\u208B\u2212\uff0d", u"-"],#\uff0d\u2014\u2013\u2015
+        [u"\u2026\u22EF", u"."]
+      ],
+      "sentenceTerminators": u".?!", #整句结尾符号，遇到这些符号，下一个单词会首字母大写
+      "symbolsPrecededBySpace": u"([{&", #符号前有空格
+      "symbolsFollowedBySpace": u".,;:!?)]}&", #符号后有空格
+      "symbolsClusteringTogether" : u"", #聚合符号，该字符前不需要前面的空格，一般用来区别symbolsPrecededBySpace
+      "wordConnectors": u"'-", #单词连接符一般为'-
+      "wordSeparators": u"\u0009\u0020\u000A\u00A0\u2013\u2014\u2015;()[]{}*&<>+=|.,;:!?/_\"“”‘’", #单词切分符，一般为标点符号
+      "contextSensitiveMultiWhitespace" : True ,  #单词间存在多个空白字符时，是否进行上下文关联（建立ngram关系）
+      "contextSensitiveWrap" : True,   #单词间存在换行符时，是否进行上下文关联（建立ngram关系）
+      "caseSensitive" : True,  # 区分大小写，为True时，处理大小写，为False时，全部转成小写处理
+      "wordCorrection" : True, # 是否纠错单词，如基本词表有VIP，语料中vip纠正为VIP
+      "unknownWordToLower" : True #基本词表中不存在的单词,转换成小写形式, 不加载基本词表时,该设置无效
+    },
+    "zh": {
+      "validchars": [
+        ##  Chinese
+        "0x3400-0x9FA5",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ]
+    },
+    "en": {
+      "validchars": [
+        ###  English(BasicLatin)
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        ##  Base Latin
+        "0x0041-0x005a",
+        "0x0061-0x007a",
+      ]
+    },
+    "en_us": {
+      ###  English_US(BasicLatin)
+      "base": "en"
+    },
+    "in": {
+      ###  Indonesian(BasicLatin)
+      "base": "en"
+    },
+    "ms": {
+      ###  Malay(BasicLatin)
+      "base": "en"
+    },
+    "tl": {
+      ###  Tagalog(BasicLatin)
+      "base": "en"
+    },
+    "fr": {
+      "validchars": [
+        ###   French(Latin1)
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        ##  Base Latin
+        "0x0041-0x005a",
+        "0x0061-0x007a",
+        ##  Latin 1
+        "0x00c0-0x00ff"
+      ],
+      "sentenceTerminators": u".?!",
+      "symbolsPrecededBySpace": u"([{&;:!?",
+      "symbolsFollowedBySpace": u".,;:!?)]}&",
+      "symbolsClusteringTogether" : u"!?",
+      "contextSensitiveMultiWhitespace" : True ,
+      "contextSensitiveWrap" : True,
+      "caseSensitive" : True
+    },
+    "fr-ca": {
+      ###   French-Canada(Latin1)
+      "base": "fr",
+      "symbolsPrecededBySpace": u"([{&:"
+    },
+    "ca": {
+      ###   Catalan(Latin1)
+      "base": "fr"
+    },
+    "da": {
+      ###   Danish(Latin1)
+      "base": "fr"
+    },
+    "es": {
+      ###   Spanish(Latin1)
+      "base": "fr"
+    },
+    "es_la": {
+      ###   Spanish_la(Latin1)
+      "base": "fr"
+    },
+    "fi": {
+      ###   Finnish(Latin1)
+      "base": "fr"
+    },
+    "pt": {
+      ###   Portuguese(Latin1)
+      "base": "fr"
+    },
+    "pt_br": {
+      ###   Portuguese_br(Latin1)
+      "base": "fr"
+    },
+    "de": {
+      ###   German(Latin1)
+      "base": "fr"
+    },
+    "it": {
+      ###   Italian(Latin1)
+      "base": "fr"
+    },
+    "nl": {
+      ###   Dutch(Latin1)
+      "base": "fr"
+    },
+    "no": {
+      ###   Norwegian(Latin1)
+      "base": "fr"
+    },
+    "sv": {
+      ###   Swedish(Latin1)
+      "base": "fr"
+    },
+    "pl": {
+      "validchars": [
+        ###  Polish(Ext-A)
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        ##  Base Latin
+        "0x0041-0x005a",
+        "0x0061-0x007a",
+        ##  Latin 1
+        "0x00c0-0x00ff",
+        ##  Ext-A
+        "0x0100-0x017f"
+      ]
+    },
+    "cs": {
+      ###  Czech(Ext-A)
+      "base": "pl"
+    },
+    "hu": {
+      ###  Hungarian(Ext-A)
+      "base": "pl"
+    },
+    "hr": {
+      ###  Croatian(Ext-A)
+      "base": "pl"
+    },
+    "lt": {
+      ###  Lithuanian(Ext-A)
+      "base": "pl"
+    },
+    "lv": {
+      ###  Litvian(Ext-A)
+      "base": "pl"
+    },
+    "sl": {
+      ###  Slovenian(Ext-A)
+      "base": "pl"
+    },
+    "sk": {
+      ###  Slovak(Ext-A)
+      "base": "pl"
+    },
+    "tr": {
+      ###  Turkish(Ext-A)
+      "base": "pl"
+    },
+    "ro": {
+      "validchars": [
+        ###  ###Romanian(ExtA+ExtB)
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        ##  Base Latin
+        "0x0041-0x005a",
+        "0x0061-0x007a",
+        ##  Latin 1
+        "0x00c0-0x00ff",
+        ##  Ext-A
+        "0x0100-0x017f",
+        ##  Ext-B
+        "0x0180-0x024f"
+      ]
+    },
+    "vi": {
+      "validchars": [
+        ###  ###Vietnamese(Ext-Additional)
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        ##  Base Latin
+        "0x0041-0x005a",
+        "0x0061-0x007a",
+        "0x0026-0x0027",
+        "0x002d-0x002e",
+        ##  Latin 1
+        "0x00c0-0x00ff",
+        ##  Ext-A
+        "0x0100-0x017f",
+        ##  Ext-B
+        "0x0180-0x024f",
+        ##  Ext-Additional
+        "0x1e00-0x1ef9"
+      ]
+    },
+    "ar": {
+      "validchars": [
+        ###  Arabic(Arabic+Supplement+ExtA)
+        "0x0600-0x0608",
+        "0x060E-0x061A",
+        "0x061C",
+        "0x0620-0x065F",
+        "0x066E-0x06D3",
+        "0x06D5-0x06EF",
+        "0x06FA-0x06FF",
+        "0x0750-0x077F",
+        "0x08A0-0x08FF",
+        "0x200C",
+        "0x200D"
+      ],
+    "sentenceTerminators": u"!؟؛."
+    },
+    "fa": {
+      ###  Persian(Arabic++Supplement+ExtA)
+      "base": "ar",
+      "caseSensitive" : False #波斯语不区分大小写
+    },
+    "ur": {
+        ###  Urdu(Arabic++Supplement+ExtA)
+     "base": "ar",
+     "sentenceTerminators": u"!؟۔؛"
+    },
+    "ru": {
+      "validchars": [
+        ###  ###Russian(Cyrillic+Supplement)
+        "0x0400-0x04FF",
+        "0500-052F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ]
+    },
+   "bg": {
+      ### Bulgarian(Cyrillic+Supplement)
+      "base": "ru"
+    },
+   "sr": {
+      ### Serbian(Cyrillic+Supplement)
+      "base": "ru"
+    },
+    "uk": {
+      "validchars": [
+        ###  ###Ukrainian:
+        "0x0400-0x04FF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ]
+    },
+    "ta": {
+      "validchars": [
+        ### Tamil
+        "0x0B80-0x0BE5",
+        "0x0BF0-0x0BFF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "hi": {
+      "validchars": [
+        ### Hindi(Devanagari+Ext)
+        "0x0900-0x0965",
+        "0x0970-0x097F",
+        "0xA8E0-0xA8FF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "bn": {
+      "validchars": [
+        ### Bengali(Bengali)
+        "0x0980-0x09E5",
+        "0x09F0-0x09FF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "gu": {
+      "validchars": [
+        ### Gujarati(Gujarati)
+        "0x0A80-0x0AE5",
+        "0x0AF0-0x0AFF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "kn": {
+      "validchars": [
+        ### Kannada(Kannada)
+        "0x0C80-0x0CE5",
+        "0x0CF0-0x0CFF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "ml": {
+      "validchars": [
+        ### Malayalam(Malayalam)
+        "0x0D00-0x0D65",
+        "0x0D70-0x0D7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "or": {
+      "validchars": [
+        ### Oriya(Oriya)
+        "0x0B00-0x0B65",
+        "0x0B70-0x0B7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "pa": {
+      "validchars": [
+        ### Punjabi(Gurmukhi)
+        "0x0A00-0x0A65",
+        "0x0A70-0x0A7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "sa": {
+      "validchars": [
+        ### Sanskrit(Devanagari+Ext)
+        "0x0900-0x0965",
+        "0x0970-0x097F",
+        "0xA8E0-0xA8FF",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "te": {
+      "validchars": [
+        ### Telugu(Telugu)
+        "0x0C00-0x0C65",
+        "0x0C70-0x0C7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!।॥"
+    },
+    "my": {
+      "validchars": [
+        ### Myanmar(Myanmar+ExtA+ExtB)
+        "0x1000-0x103F",
+        "0x104A-0x109F",
+        "0xAA60-0xAA7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!၊။"
+    },
+    "km": {
+      "validchars": [
+        ### Khmer(Khmer)
+        "0x1780-0x17DF",
+        "0x17EA-0x17FF",
+        "0xAA60-0xAA7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d",
+        "0x200C",
+        "0x200D"
+      ],
+      "caseSensitive" : False,
+      "sentenceTerminators": u"?!។៕៚៖៙"
+    },
+    "th": {
+      "validchars": [
+        ###  ###Thai:
+        "0x0E00-0x0E4F",
+        "0x0E5A-0x0E7F",
+        ##  Basic punct.
+        "0x0027",
+        "0x002d"
+      ]
+    },
+    "el": {
+      "validchars": [
+      ### ###Greek:
+      "0x0370-0x03FF",
+              ##  Basic punct.
+        "0x0027",
+        "0x002d"],
+      "sentenceTerminators": u".;!?"
+    },
+    "heb": {
+      "validchars": [
+      ### ###Hebrew:
+      "0x05D0-0x05F2",
+              ##  Basic punct.
+        "0x0027",
+        "0x002d"],
+      "sentenceTerminators": u".;!?"
+    },
+    "ka": {
+      "validchars": [
+      ### ###Georgian:
+      "0x10A0-0x10FF",
+              ##  Basic punct.
+        "0x0027",
+        "0x002d"],
+      "sentenceTerminators": u".;!?"
+    },
+    "hy-am": {
+      ###  ### Armenian in Armenia
+      "validchars": [],
+      "symbolsFollowedBySpace": u".,;:!?)]}&\u0589\u055D",
+      "wordSeparators": u"\u0009\u0020\u000A\u00A0()[]{}*&<>+=|.,;:!?/_\"\u0589\u055D"
+    }
+  }
+}
+

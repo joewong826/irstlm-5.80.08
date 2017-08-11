@@ -1,0 +1,225 @@
+#!/usr/bin/env python
+# -*- coding=utf-8 -*-
+
+import codecs
+import re
+import os
+import sys
+#import validchars
+from  subprocess import *
+from languageparse import *
+
+
+#A '21	2009	3	1
+
+def openFile(path, mode='r', coding='utf8'):
+    fp = sys.stdout if mode.count('w') > 0 else sys.stdin
+    if path is not None:
+        if path.count(' ') == 0:
+            fp = open(path, mode)
+        else:
+            fp = os.popen(path, mode)
+    return fp
+
+class GoogleNgram:
+    POS = [
+        "NOUN",  # Noun 名词
+        "VERB",  # verb 动词
+        "ADJ",  # adjective 形容词
+        "ADV",  # adverb 副词
+        "PRON",  # pronoun 代名词
+        "DET",  # Determiner or article   限定词
+        "ADP",  # Adposition(preposition or postposition) 介词
+        "NUM",  # Numeral 数字
+        "CONJ",  # Conjunction 连词
+        "PRT",  # Particle
+        "ROOT",  # Root of the parse tree
+        "X",  # a catch-all for other categories such as abbreviations or foreign words   其他（如缩写，外来词）
+        ".",  #punctuation marks 标点符号
+        #"START",  # Start of a sentence (Sentence boundary)
+        #"END",  # End of a sentence (Sentence boundary)
+    ]
+
+    REPLEASE_WORD = {
+        '_START_'   : '<s>',
+        '_END_'     : '</s>',
+        #'_._'       : '',
+        'I\'1l'     : 'I\'ll',
+    }
+
+
+    def __init__(self, locale='en', order=2, requiredColumns=(0, 1), year=0, caseSensitive=False):
+        '''
+
+        :param requiredColumns:需要的列，第一个为词列，第二个为频度列，第三个为年份（可以省略）
+               2012年：ngram TAB year TAB match_count TAB volume_count NEWLINE
+               2009年：ngram TAB year TAB match_count TAB page_count TAB volume_count NEWLINE
+        :return:
+        '''
+        self.locale = locale
+        self.order = int(order)
+        self.requiredColumns = requiredColumns
+        self.year = int(year)
+        self.caseSensitive = caseSensitive
+        # bus_NOUN==>bus
+        self.patternReplacePOS = '_(%s)_?$' %('|'.join(GoogleNgram.POS))
+        self.regexReplacePOS = re.compile(self.patternReplacePOS)
+        self.patternReplaceWord = '^(%s)$' % '|'.join([rw for rw in GoogleNgram.REPLEASE_WORD.keys()])
+        self.regexReplaceWord = re.compile(self.patternReplaceWord)
+        # self.validchars = validchars.ValidChars()
+        self.mLanguageParse = None#LanguageParse.getLanguageParse(locale)
+
+    def __filter(self, word):
+        '''
+        1.清理标签
+        2.替换字符
+        3.检测无效字符
+        :param words:
+        :return:
+        '''
+        # 1.清理标签
+        # def replacePOS (m):
+        #     # print m.group(0)
+        #     return ' '
+        word = self.regexReplacePOS.sub(lambda m: " ", word).rstrip()
+
+        # 2.替换字符
+        def replaceWord(m):
+            word = m.group(0)
+            # print m.group(0)
+            #return word.replace(word.strip(), GoogleNgram.REPLEASE_WORD.get(word.strip(), m.group(0)))
+            return GoogleNgram.REPLEASE_WORD.get(word, word)
+        word = self.regexReplaceWord.sub(replaceWord, word).rstrip()
+
+        # 3.检测无效字符
+        # if self.validchars.hasInvalidChars(word):
+        #     word = ''
+        if self.mLanguageParse is not None and self.mLanguageParse.hasInvalidChars(word):
+            word = ''
+
+        return word
+
+    def __filterArray(self, words):
+        for i, word in enumerate(words):
+            words[i] = self.__filter(word)
+        return words
+
+    def test(self):
+        print self.patternReplaceWord
+        line = '_START_ _START_ _._ I\'1l abc _END_'
+        print ' '.join(self.__filterArray(line.split()))
+
+    def loadValidchars(self, validcharspath):
+        # self.validchars.read(validcharspath)
+        # self.validchars.setLocale(self.locale)
+        self.mLanguageParse = LanguageParse.getLanguageParse(self.locale, validcharspath)
+
+    def load(self, inputpath=None, outputpath=None, ):
+        '''
+        :param inputpath:
+        :param outputpath:
+        :return:
+        '''
+        stdin = openFile(inputpath, 'r', 'utf8')
+        stdout = openFile(outputpath, 'w', 'utf8')
+        wordCol = self.requiredColumns[0]
+        freqCol = self.requiredColumns[1]
+        hasYear = True if len(self.requiredColumns) == 3 else False
+        if hasYear:
+            yearCol = self.requiredColumns[2]
+        for i, line in enumerate(stdin):
+            line = line.strip()
+            if line == "":
+                continue
+            cols = line.split('\t')
+            if hasYear and int(cols[yearCol]) < self.year:
+                continue;
+            # words = self.__filter(cols[wordCol])
+            words = ' '.join(self.__filterArray(cols[wordCol].split())).strip()
+            if words == "" or words.count(' ')+1 != self.order:
+                continue
+            if not self.caseSensitive:
+                words = words.lower()
+            freq = cols[freqCol]
+            # print i
+            #stdout.write('%s\t%s\t%s\n' % (words, freq, cols[yearCol]))
+            stdout.write('%s\t%s\n' % (words, freq))
+        stdin.close();
+        stdout.close();
+
+
+# googlengram.test();
+
+from optparse import OptionParser
+def analyzeParams(args):
+    parser = OptionParser(usage="%prog -l locale [-f FILE] [-n num] [-c str] -i FILE or [< FILE] -o FILE or [> FILE]"
+                                ""
+                          , version="%prog 1.0")
+
+    # add_option用来加入选项，action是有store，store_true，store_false等，dest是存储的变量，default是缺省值，help是帮助提示
+    parser.set_description(u'格式化GoogleNgram文件\n'
+
+                           );
+
+    parser.add_option("-l", "--locale", dest="locale", metavar="string"
+                      , help=u'语言locale, 通过locale来决定有效字符', default='')
+    parser.add_option("-f", "--languageInfoPath", dest="languageInfoPath", metavar="FILE", action="store"
+                  , help=u'语言信息Json文件，包含语言locale及有效字符。如果不指定，会自动在程序所在目录下查找languageinfo.json文件')
+    parser.add_option("-n", "--order", dest="order", metavar="int" , help=u'Ngram order, Default 2', default=2)
+    parser.add_option("-c", "--cols", dest="cols", metavar="string"
+                      , help=u'指定词，频率和年份所在列（年份可以省略），0开始，默认0,2\n'
+                      u'2012版本和2009版本：词，频率，年份分别为0,2,1', default="0,2")
+    parser.add_option("-y", "--year", dest="year", metavar="int" , help=u'过滤年份，-c中指定年份列时有效, <丢弃, default=2000', default=2000)
+
+    parser.add_option("-u", "--caseSensitive", dest="caseSensitive", action="store_true"
+                      , help=u'区分大小写，默认会把所有字符转成小写', default=False)
+
+    parser.add_option("-i", "--input", dest="inputPath", metavar="FILE", action="store"
+                      , help=u'输入文件路径, 可以是文件也可以是管道， 也可使用< FILE')
+    parser.add_option("-o", "--output", dest="outputpath", metavar="FILE", action="store"
+                      , help=u'输出文件路径，可以是文件也可以是管道， 也可使用> FILE')
+
+
+
+    if len(args) <= 1:
+        parser.print_help(sys.stderr)
+        eg = '''eg:
+google-ngram -l en -n 2 -c 0,2 -i "gunzip -c googlebooks-eng-all-2gram-20120701-aa.gz"
+google-ngram -l en -n 2 -c 0,2,1 -y 1999 -i "gunzip -c googlebooks-eng-all-2gram-20120701-aa.gz"
+google-ngram -l en -n 2 -c 0,2 -i googlebooks-eng-all-2gram-20120701-aa.txt
+        '''
+        sys.stderr.write(eg)
+        return
+
+    (opt, args) = parser.parse_args(args)
+
+    if opt.locale == '':
+        sys.stderr.write('error: 没有通过-l指定locale。')
+        sys.exit(0)
+
+    if 1 != opt.cols.count(',') != 2:
+        sys.stderr.write('-c必须是i,j或者i,j,k格式');
+        sys.exit(0)
+
+    requiredColumns = tuple([int(n) for n in opt.cols.split(',')])
+
+    googlengram = GoogleNgram(locale=opt.locale, order=int(opt.order), requiredColumns=requiredColumns, year=int(opt.year), caseSensitive=opt.caseSensitive)
+    googlengram.loadValidchars(opt.languageInfoPath)
+    googlengram.load(opt.inputPath, opt.outputpath)
+
+
+if __name__ == "__main__":
+    # path = 'gunzip -c /home/zhaokun/IME/StatisticalLanguageModel/data/googlengram/2gram-st.gz'
+    # output = '/home/zhaokun/IME/StatisticalLanguageModel/data/googlengram/2gram-st_new'
+    # -l en -n 2 -c 0,2 -i
+    # sys.argv = ['/home/zhaokun/IME/StatisticalLanguageModel/irstlm-5.80.08/trunk/scripts/google-ngram'
+    #     , '-i', '/home/zhaokun/文档/google/ze.txt'
+    #     , '-l', 'en'
+    #     , '-n', '2'
+    #     , '-c', '0,2,1'
+    #     , '-y', "1000"
+    #     # , '-u'
+    #             ]
+    analyzeParams(sys.argv)
+
+

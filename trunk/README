@@ -1,0 +1,128 @@
+IRSTLM Toolkit 
+
+CONTENT:
+
+- src: source code
+- scripts: supporting scripts
+- doc: documentation (in Latex) and in pdf (to be generated)
+- bin: binaries (to be generated) and scripts
+- lib: libraries (to be generated)
+- readme: this file
+
+DOCUMENTATION
+
+A User Manual is available under https://sourceforge.net/projects/irstlm
+The data for the examples described in the User Manual are available under http://sourceforge.net/projects/irstlm/files/irstlm/sampledata/
+
+HOW TO INSTALL WITH AUTOMAKE
+
+step 0: sh regenerate-makefiles.sh [--force]
+# set parameter force to the value "--force" if you want to recreate all links to the autotools
+
+step 1: ./configure [--prefix=/path/where/to/install] ...
+# run "configure --help" to get more details on the compilation options
+
+step 2: make
+
+step 3: make install
+
+These steps will generate the irstlm library and commands, respectively,
+under the specified path where to install.
+
+HOW TO INSTALL WITH CMAKE
+
+step 0: cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/path/where/to/install"
+step 2: make
+step 3: make install
+
+HOW TO CONTRIBUTE
+
+If you wish to contribute to the Open Source IRSTLM toolkit just tell us! 
+
+Marcello Federico
+FBK-irst, Trento, ITALY
+email: federico AT fbk DOT eu
+
+
+===================================================================================
+make_lm.sh:
+
+参数说明：
+       -a|--addStartEnd        first step: run add start end, add <s></s>
+       -d|--dict               second step: run dict, generate word count.
+       -b|--buildIm            Third step: run build im..generate *.im.gz
+       -p|--prune              Four step: run prune im. generate *.plm,*qlm,*_go.txt
+
+       -c|--corpusPath         Input Corpus, or Corpus dirs
+       -L|--lanuage            Lanuage
+       -l|--locale             Lanuage locale
+       -v|--dataversion        Data version, default 1
+       -o|--order              ngram order, default 2 (bigram)
+       -u|--unigramCount       Unigram word count, default 1000000000
+       -w|--wordMaxLen         Word max len, default 30
+       -t|--pruneThreshold     Pruning frequency threshold for each level; comma-separated list of values; (default is '0,0,...,0', for all levels)
+
+运行方式：
+        e.g.:   ./make_lm.sh -a -d -b -p -c english.txt -L english -l en -v 100 -o 2 -u 100000 -w 32 -t 1e-07
+                ./make_lm.sh -a -d -b -p -L english -l en -v 100 -o 2 -u 100000 -w 32 -t 1e-07
+                ./make_lm.sh -a -d -b -p -L english -l en -v 100 -u 100000 -t 1e-07
+
+        a d b p为需要执行的操作，分别为语料断句并添加标签、生成词语频度、模型训练、二维裁剪并生成最终的go文本词库
+        4个参数顺序执行，可以分别指定运行哪个操作，比如只进行裁剪-p
+        4个操作分别会有不同的输出，会根据-L指定的名字命令
+        如：-L english
+        -a 输出english_add_start_end.txt
+        -d 输出english_count_original.txt和english_count.txt
+        -b 输出english.ilm.gz和english.lm.gz
+        -p 输出english.plm、english.qlm和english_***_***_go.txt
+
+        -c 指定语料文件路径，可以是文件或目录
+        -l 语言locale，比如English为en，必须指定，-a参数时，会根据locale对字符进行过滤，支持的locale参考validchars文件
+           如果有新添加的语言，需要在validchars里增加响应locale，没有locale会读取validchars文件中公共的common
+        -v go文本词库中的版本号，默认为1
+        -o ngram order, 一维为1，二维为2，三维为3. 默认为2
+        -u 单词个数，默认1000000000，该只只是一个大概值，计算方式是先对***_count_original.txt文件进行频度由大到小排序
+           然后获取指定单词个数所在行的频度大小，在通过该频度大小进行裁剪。
+           比如-u指定10000，如果第10000行所在单词的频度是20，则会裁剪20以下的词。所以实际结果会>这个值
+        -w 单词最大长度，默认为30
+        -t n维裁剪阀值，如要裁剪二维，则1e-6，一般用指数表示，如果是三维则为1e-6,1e-6，
+           -p操作时用到，执行会中断由用户决定是否需要修改裁剪阀值,
+           如果需要修改，输入修改阀值如1e-7回车即可
+           如果不需要修改，输入n或N回车直接退出
+
+===================================================================================
+add-start-end-ex.sh
+格式化文件，以文件的行为单位，把每行分割成句子，每个句子左右分别添加<s> </s>
+
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -f FILE, --validcharsfile=FILE
+                        有效字符文件，以行为单位，#为注释行，-为分隔符，如0x30-0x39为数字。如果不指定，会自动在程序所在目
+                        录下查找validchars文件
+  -p string, --punctuation=string
+                        指定标点符号，以该标点符号结尾时会被删除,默认,.'-‘’
+  -c string, --coding=string
+                        指定输入文件编码， 默认utf-8，使用-i时该参数无效
+  -u, --casesensitive   区分大小写，默认会把所有字符转成小写
+  -i FILE, --input=FILE
+                        输入文件路径, 可以是目录， 也可使用< FILE
+  -o FILE, --output=FILE
+                        输出文件路径， 也可使用> FILE
+  -l string, --locale=string
+                        语言locale, 通过locale来决定有效字符
+
+  -i: 输入文件路径，可以是一个语料文件，也可以是语料目录
+  -o: 输出文件路径，可以是一个文件，也可以是目录，
+      当是文件时，-i指定的文件会被添加标签输出到该文件，-i是目录会合并所有文件结果
+      当是目录时，-i是目录时，会按照-i指定目录的目录结果输出到-o指定的目录下
+  -l: 语言locale，必须指定，会根据validchars文件指定的有效字符进行过滤
+      如果有新语言，需要手动修改validchars文件
+      也可以传入common，读取公共的有效字符（latin）
+
+
+===================================================================================
+merge-files.sh
+文件合并
+运行方式：merge-files.sh filedir file
+    第一个参数为目录
+    第二个参数为合并后文件
